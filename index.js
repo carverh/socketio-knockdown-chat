@@ -19,7 +19,7 @@ app.get('/', function(req, res) {
 });
 
 io.on('connection', function(socket) {
-  console.log('new connection');
+  console.log(`new connection from ${socket.request.connection.remoteAddress}`);
 
   var addedUser = false;
 

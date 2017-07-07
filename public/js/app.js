@@ -1,7 +1,12 @@
-if (Notification.permission !== "denied") {
+window.setInterval(function() {
+  var elem = document.querySelector('.messages');
+  elem.scrollTop = elem.scrollHeight;
+}, 100);
+
+if (Notification.permission != "denied" && Notification.permission != "granted") {
   Notification.requestPermission(function(permission) {
     // If the user accepts, let's create a notification
-    if (permission === "granted") {
+    if (permission == "granted") {
       var notification = new Notification("You will now recive notifications from DorpChat");
     }
   });
