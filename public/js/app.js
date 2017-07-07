@@ -72,7 +72,7 @@ function MainViewModel() {
       self.sendNotification(sender, content);
     }
     self.messages.push({
-      content: micromarkdown.parse(content),
+      content: emojify.replace(micromarkdown.parse(content)),
       channel: channel,
       sender: sender
     });

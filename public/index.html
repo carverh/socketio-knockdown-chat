@@ -5,9 +5,11 @@
   <meta charset="utf-8">
   <title>DorpChat</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://unpkg.com/emojify.js@1.1.0/dist/css/basic/emojify.min.css" />
   <script src="/socket.io/socket.io.js"></script>
   <script src="https://unpkg.com/knockout@3.4.2" charset="utf-8"></script>
   <script src="https://unpkg.com/micromarkdown@0.3.4-a" charset="utf-8"></script>
+  <script src="https://unpkg.com/emojify.js@1.1.0" charset="utf-8"></script>
   <style media="screen">
     * {
       box-sizing: border-box;
@@ -15,7 +17,7 @@
 
     body {
       margin: 0;
-      font-family: monospace;
+      font-family: 'Roboto', sans-serif;
     }
 
     .container {
@@ -60,6 +62,10 @@
       display: flex;
     }
 
+    .emoji {
+      margin: 0;
+    }
+
     #messagewriter {
       flex: 1;
     }
@@ -74,7 +80,7 @@
   </dialog>
 
   <div class="container">
-    <h1 class="title">DorpChat v1.2.1</h1>
+    <h1 class="title">DorpChat v1.2.2</h1>
 
     <div class="flex-wrapper">
       <div class="chat">
