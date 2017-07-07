@@ -16,7 +16,7 @@ var bcrypt = require('bcrypt');
 
 var User = require('./models');
 
-mongoose.connect('mongodb://admin:kekistan55@mongodb.dorpchat.svc/app');
+mongoose.connect('mongodb://carver:kekistan55@mongodb.dorpchat.svc/app');
 
 var users = []
 
