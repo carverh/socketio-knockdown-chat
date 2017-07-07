@@ -26,12 +26,15 @@ function MainViewModel() {
 
   self.usernameDialogOpen = ko.observable(true);
   self.username = ko.observable();
+  self.password = ko.observable();
   self.channel = ko.observable('general');
   self.users = ko.observableArray();
   self.messageContent = ko.observable('');
+  self.clientDisconnected = ko.observable(false);
 
   self.loginBodyData = {
-      username: self.username
+    username: self.username,
+    password: self.password
   };
 
   self.loginBodyTemplate = ko.observable('loginBodyData');
@@ -62,7 +65,9 @@ function MainViewModel() {
     // Let's check whether notification permissions have already been granted
     else if (Notification.permission === "granted") {
       // If it's okay let's create a notification
-      var notification = new Notification(title, {body: body});
+      var notification = new Notification(title, {
+        body: body
+      });
     }
 
     // Otherwise, we need to ask the user for permission
@@ -76,16 +81,46 @@ function MainViewModel() {
     }
   }
 
-  self.setUsername = function() {
-    socket.emit('set username', self.username())
+  self.signup = function () {
+    console.log(`signup as ${self.username()}`)
+    socket.emit('authentication', {
+      username: self.username(),
+      password: self.password(),
+      signingUp: true
+    });
+
+    socket.on('authenticated', function() {
+      console.log('authenticated');
+      self.usernameDialogOpen(false);
+    });
+  }
+
+  self.login = function(signingUp) {
+    console.log(`login as ${self.username()}`)
+    socket.emit('authentication', {
+      username: self.username(),
+      password: self.password(),
+      signingUp: false
+    });
+
+    socket.on('authenticated', function() {
+      console.log('authenticated')
+      self.usernameDialogOpen(false);
+    });
   }
 
   self.sendMessage = function() {
     if (self.messageContent().length > 0) {
       if (self.messageContent()[0] == '/') {
-        socket.emit('run command', {command: self.messageContent().split('/')[1].split(' ')[0], args: self.messageContent().split(' ').splice(1)})
+        socket.emit('run command', {
+          command: self.messageContent().split('/')[1].split(' ')[0],
+          args: self.messageContent().split(' ').splice(1)
+        })
       } else {
-        socket.emit('send message', {content: self.messageContent(), channel: self.channel()});
+        socket.emit('send message', {
+          content: self.messageContent(),
+          channel: self.channel()
+        });
       }
       self.messageContent('');
     }
@@ -110,6 +145,13 @@ function MainViewModel() {
   socket.on('update userlist', function(users) {
     self.users(users);
   })
+
+  socket.on('connect', function() {
+  });
+
+  socket.on('disconnect', function() {
+    self.clientDisconnected(true);
+  });
 }
 
 ko.applyBindings(new MainViewModel())

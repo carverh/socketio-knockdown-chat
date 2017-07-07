@@ -24,14 +24,17 @@
     visible: usernameDialogOpen,
     header: { name: 'loginHeaderTemplate', data: { label: 'Enter your name' } },
     body: { name: loginBodyTemplate, data: loginBodyData },
-    footer: { name: 'loginFooterTemplate', data: { action: setUsername, primaryLabel: 'Ok' } }
+    footer: { name: 'loginFooterTemplate', data: { loginAction: login, signupAction: signup, loginLabel: 'Login', signupLabel: 'Signup' } }
 }"></div>
 
   <div class="container">
+    <div data-bind="visible: clientDisconnected">
+      <div data-bind="alert: { message: 'You have been disconnected from the server, try refreshing.', type: 'danger' }"></div>
+    </div>
     <nav class="navbar navbar-default">
       <div class="container-fluid">
         <div class="navbar-header">
-          <a class="navbar-brand" href="#">DorpChat v1.3.1</a>
+          <a class="navbar-brand" href="#">DorpChat v1.4-rc1</a>
         </div>
       </div>
       <!--/.container-fluid -->
@@ -64,7 +67,7 @@
       <div class="col-md-3 hidden-sm hidden-xs maincol">
         <div class="users">
           <ul class="list-group" data-bind="foreach: users">
-            <li class="list-group-item" data-bind="text: $data"></li>
+            <li class="list-group-item" data-bind="text: $data.username"></li>
           </ul>
         </div>
       </div>
@@ -72,7 +75,14 @@
   </div>
 
   <script id="loginBodyData" type="text/html">
-    <input type="text" class="form-control" data-bind="value: username">
+    <div class="input-group">
+      <label for="inusername">Username</label>
+      <input type="text" class="form-control" id="inusername" data-bind="value: username">
+    </div>
+    <div class="input-group">
+      <label for="inpassword">Password</label>
+      <input type="text" class="form-control" id="inpassword" data-bind="value: password">
+    </div>
   </script>
 
   <script id="loginHeaderTemplate" type="text/html">
@@ -80,7 +90,8 @@
   </script>
 
   <script id="loginFooterTemplate" type="text/html">
-    <button class="btn btn-primary" data-bind="click: action, html: primaryLabel"></button>
+    <button class="btn btn-primary" data-bind="click: loginAction, html: loginLabel"></button>
+    <button class="btn btn-primary" data-bind="click: signupAction, html: signupLabel"></button>
   </script>
 
   <script src="/js/app.js" charset="utf-8"></script>
