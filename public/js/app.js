@@ -1,3 +1,12 @@
+if (Notification.permission !== "denied") {
+  Notification.requestPermission(function(permission) {
+    // If the user accepts, let's create a notification
+    if (permission === "granted") {
+      var notification = new Notification("You will now recive notifications from DorpChat");
+    }
+  });
+}
+
 function MainViewModel() {
   var self = this;
   var socket = io();
