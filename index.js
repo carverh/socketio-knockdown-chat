@@ -33,6 +33,7 @@ require('socketio-auth')(io, {
       User.find({
         username: username
       }, function(err, s) {
+        console.dir(s)
         if (s.length != 0) {
           log.warning(`The user ${username} already exists`)
         } else {
