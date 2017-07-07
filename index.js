@@ -16,7 +16,13 @@ var bcrypt = require('bcrypt');
 
 var User = require('./models');
 
-mongoose.connect('mongodb://carver:kekistan55@mongodb.dorpchat.svc/app');
+const ON_SERVER = false;
+
+if (ON_SERVER) {
+  mongoose.connect('mongodb://carver:kekistan55@mongodb.dorpchat.svc/app');
+} else {
+  mongoose.connect('mongodb://localhost/app');
+}
 
 var users = []
 
@@ -33,7 +39,7 @@ require('socketio-auth')(io, {
       User.find({
         username: username
       }, function(err, s) {
-        if (s) {
+        if (s && s.length > 0) {
           log.warning(`The user ${username} already exists`)
         } else {
           var newUser = User({
