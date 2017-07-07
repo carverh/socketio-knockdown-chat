@@ -3,7 +3,7 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
-var numUsers = 0;
+var users = [];
 
 app.use(express.static('public'))
 
@@ -25,31 +25,31 @@ io.on('connection', function(socket){
 
   socket.on('set username', function(username) {
     if (addedUser) return;
+    if (users.indexOf(username) > -1) return;
+
     socket.username = username;
-    ++numUsers;
     addedUser = true;
 
+    users.push(username)
+
     socket.emit('login', {
-      numUsers: numUsers
+      users: users
     });
 
-    socket.broadcast.emit('user joined', {
-      username: socket.username,
-      numUsers: numUsers
-    });
+    io.sockets.emit('update userlist', users);
 
-    io.sockets.emit('message', `${username} joined.`, 'general', 'dorpchat');
+    io.sockets.emit('message', `${socket.username} joined.`, 'general', 'dorpchat');
   });
 
   socket.on('disconnect', function () {
     if (addedUser) {
-      --numUsers;
-
-      // echo globally that this client has left
-      socket.broadcast.emit('user left', {
-        username: socket.username,
-        numUsers: numUsers
-      });
+      console.log('user disconnected')
+      var i = users.indexOf(socket.username);
+      if(i != -1) {
+        users.splice(i, 1);
+      }
+      io.sockets.emit('update userlist', users);
+      io.sockets.emit('message', `${socket.username} left.`, 'general', 'dorpchat');
     }
   });
 });

@@ -1,33 +1,112 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>DorpChat</title>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="https://unpkg.com/knockout@3.4.2" charset="utf-8"></script>
-  </head>
-  <body>
-    <h1>Le Chat App</h1>
 
-    <dialog class="nameprompt" data-bind="attr: { open: usernameDialogOpen }">
-      <h3>Enter Your Name</h3>
-      <input type="text" data-bind="value: username">
-      <button type="button" data-bind="click: setUsername">OK</button>
-    </dialog>
+<head>
+  <meta charset="utf-8">
+  <title>DorpChat</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://unpkg.com/knockout@3.4.2" charset="utf-8"></script>
+  <style media="screen">
+    * {
+      box-sizing: border-box;
+    }
 
-    <div class="chat">
-      <div class="messages">
-        <div class="message" data-bind="foreach: messages">
-          <p>
-            <!--ko text: sender--><!--/ko-->: <!--ko text: content--><!--/ko-->
-          </p>
+    body {
+      margin: 0;
+      font-family: monospace;
+    }
+
+    .container {
+      margin: 1rem;
+      padding: 1rem;
+      border: 1px solid black;
+      border-radius: 0.5rem;
+    }
+
+    .title {
+      margin: 0 0 1rem 0;
+    }
+
+    .messages {
+      border: 1px solid black;
+      overflow-y: scroll;
+      height: 16rem;
+      padding: 8px;
+    }
+
+    .chat {
+      flex: 0 0 75%;
+    }
+
+    .users {
+      border: 1px solid black;
+      height: 16rem;
+      flex: 0 0 25%;
+      overflow-y: scroll;
+    }
+
+    .compose {
+      display: flex;
+    }
+
+    .compose input {
+      flex: 0 0 85%;
+    }
+
+    .compose button {
+      flex: 0 0 15%;
+    }
+
+    .users ul {
+
+    }
+
+    .flex-wrapper {
+      height: 100%;
+      display: flex;
+    }
+  </style>
+</head>
+
+<body>
+  <dialog class="nameprompt" data-bind="attr: { open: usernameDialogOpen }">
+    <h3>Enter Your Name</h3>
+    <input type="text" data-bind="value: username">
+    <button type="button" data-bind="click: setUsername">OK</button>
+  </dialog>
+
+  <div class="container">
+    <h1 class="title">DorpChat v1.1</h1>
+
+    <div class="flex-wrapper">
+      <div class="chat">
+        <div class="messages">
+            <!--ko foreach: messages-->
+              <div>
+                <!--ko text: sender-->
+                <!--/ko-->:
+                <!--ko text: content-->
+                <!--/ko-->
+              </div>
+            <!--/ko-->
+        </div>
+
+        <div class="compose">
+          <input type="text" data-bind="value: messageContent">
+          <button type="button" data-bind="click: sendMessage">Send Message</button>
         </div>
       </div>
-      <div class="compose">
-        <input type="text" data-bind="value: messageContent">
-        <button type="button" data-bind="click: sendMessage">Send Message</button>
+
+      <div class="users">
+        <ul data-bind="foreach: users">
+            <li data-bind="text: $data"></li>
+        </ul>
       </div>
     </div>
-    <script src="/js/app.js" charset="utf-8"></script>
-  </body>
+  </div>
+
+  <script src="/js/app.js" charset="utf-8"></script>
+</body>
+
 </html>

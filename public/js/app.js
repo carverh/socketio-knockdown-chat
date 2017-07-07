@@ -2,11 +2,12 @@ function MainViewModel() {
   var self = this;
   var socket = io();
 
-  this.messages = ko.observableArray([]);
+  this.messages = ko.observableArray();
 
   this.usernameDialogOpen = ko.observable(true);
   this.username = ko.observable();
   this.channel = ko.observable('general');
+  this.users = ko.observableArray();
   this.messageContent = ko.observable();
 
   this.setUsername = function() {
@@ -26,6 +27,11 @@ function MainViewModel() {
 
   socket.on('login', function(data) {
     self.usernameDialogOpen(false);
+  })
+
+  socket.on('update userlist', function(users) {
+    console.log('u')
+    self.users(users);
   })
 }
 
