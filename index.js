@@ -16,7 +16,7 @@ var bcrypt = require('bcrypt');
 
 var User = require('./models');
 
-const ON_SERVER = false;
+const ON_SERVER = true;
 
 if (ON_SERVER) {
   mongoose.connect('mongodb://carver:kekistan55@mongodb.dorpchat.svc/app');
