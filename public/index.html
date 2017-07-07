@@ -7,6 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <script src="/socket.io/socket.io.js"></script>
   <script src="https://unpkg.com/knockout@3.4.2" charset="utf-8"></script>
+  <script src="https://unpkg.com/micromarkdown@0.3.4-a" charset="utf-8"></script>
   <style media="screen">
     * {
       box-sizing: border-box;
@@ -50,14 +51,6 @@
       display: flex;
     }
 
-    .compose input {
-      flex: 0 0 85%;
-    }
-
-    .compose button {
-      flex: 0 0 15%;
-    }
-
     .users ul {
 
     }
@@ -65,6 +58,10 @@
     .flex-wrapper {
       height: 100%;
       display: flex;
+    }
+
+    #messagewriter {
+      flex: 1;
     }
   </style>
 </head>
@@ -77,24 +74,21 @@
   </dialog>
 
   <div class="container">
-    <h1 class="title">DorpChat v1.1</h1>
+    <h1 class="title">DorpChat v1.2</h1>
 
     <div class="flex-wrapper">
       <div class="chat">
         <div class="messages">
             <!--ko foreach: messages-->
               <div>
-                <!--ko text: sender-->
-                <!--/ko-->:
-                <!--ko text: content-->
-                <!--/ko-->
+                <span data-bind="html: sender+':'+content"></span>
               </div>
             <!--/ko-->
         </div>
 
         <div class="compose">
-          <input type="text" data-bind="value: messageContent">
-          <button type="button" data-bind="click: sendMessage">Send Message</button>
+          <input id="messagewriter" data-bind="value: messageContent, valueUpdate: 'afterkeydown', event: {keypress: messagewriterKeypress}"></textarea>
+          <button type="button" id="sendmessage" data-bind="click: sendMessage">Send Message</button>
         </div>
       </div>
 
