@@ -4,107 +4,83 @@
 <head>
   <meta charset="utf-8">
   <title>DorpChat</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="https://unpkg.com/emojify.js@1.1.0/dist/css/basic/emojify.min.css" />
+  <link rel="stylesheet" href="https://unpkg.com/bootstrap@3.3.7/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="/css/master.css" />
   <script src="/socket.io/socket.io.js"></script>
   <script src="https://unpkg.com/knockout@3.4.2" charset="utf-8"></script>
   <script src="https://unpkg.com/micromarkdown@0.3.4-a" charset="utf-8"></script>
   <script src="https://unpkg.com/emojify.js@1.1.0" charset="utf-8"></script>
-  <style media="screen">
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      font-family: 'Roboto', sans-serif;
-    }
-
-    .container {
-      margin: 1rem;
-      padding: 1rem;
-      border: 1px solid black;
-      border-radius: 0.5rem;
-    }
-
-    .title {
-      margin: 0 0 1rem 0;
-    }
-
-    .messages {
-      border: 1px solid black;
-      overflow-y: scroll;
-      height: 16rem;
-      padding: 8px;
-    }
-
-    .chat {
-      flex: 0 0 75%;
-    }
-
-    .users {
-      border: 1px solid black;
-      height: 16rem;
-      flex: 0 0 25%;
-      overflow-y: scroll;
-    }
-
-    .compose {
-      display: flex;
-    }
-
-    .users ul {
-
-    }
-
-    .flex-wrapper {
-      height: 100%;
-      display: flex;
-    }
-
-    .emoji {
-      margin: 0;
-    }
-
-    #messagewriter {
-      flex: 1;
-    }
-  </style>
+  <script src="https://unpkg.com/jquery@3.2.1" charset="utf-8"></script>
+  <script src="https://unpkg.com/bootstrap@3.3.7/dist/js/bootstrap.min.js" charset="utf-8"></script>
+  <script src="https://unpkg.com/knockstrap@1.3.2" charset="utf-8"></script>
 </head>
 
 <body>
-  <dialog class="nameprompt" data-bind="attr: { open: usernameDialogOpen }">
-    <h3>Enter Your Name</h3>
-    <input type="text" data-bind="value: username">
-    <button type="button" data-bind="click: setUsername">OK</button>
-  </dialog>
+  <div data-bind="modal: {
+    options: { backdrop: 'static' },
+    visible: usernameDialogOpen,
+    header: { name: 'loginHeaderTemplate', data: { label: 'Enter your name' } },
+    body: { name: loginBodyTemplate, data: loginBodyData },
+    footer: { name: 'loginFooterTemplate', data: { action: setUsername, primaryLabel: 'Ok' } }
+}"></div>
 
   <div class="container">
-    <h1 class="title">DorpChat v1.2.2</h1>
-
-    <div class="flex-wrapper">
-      <div class="chat">
-        <div class="messages">
-            <!--ko foreach: messages-->
-              <div>
-                <span data-bind="html: sender+':'+content"></span>
-              </div>
-            <!--/ko-->
-        </div>
-
-        <div class="compose">
-          <input id="messagewriter" data-bind="value: messageContent, valueUpdate: 'afterkeydown', event: {keypress: messagewriterKeypress}"></textarea>
-          <button type="button" id="sendmessage" data-bind="click: sendMessage">Send Message</button>
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#">DorpChat v1.3</a>
         </div>
       </div>
+      <!--/.container-fluid -->
+    </nav>
 
-      <div class="users">
-        <ul data-bind="foreach: users">
+    <div class="row mainrow">
+      <div class="col-md-9 maincol">
+        <div class="chat">
+          <div class="messages well">
+            <!--ko foreach: messages-->
+            <div>
+              <span data-bind="html: sender+':'+content"></span>
+            </div>
+            <!--/ko-->
+          </div>
+
+          <div class="compose row">
+            <div class="col-md-12">
+              <div class="input-group">
+                <input id="messagewriter" class="form-control" data-bind="value: messageContent, valueUpdate: 'afterkeydown', event: {keypress: messagewriterKeypress}"></textarea>
+                <span class="input-group-btn">
+                  <button type="button" id="sendmessage" class="btn btn-primary" data-bind="click: sendMessage">Send</button>
+                </span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="col-md-3 hidden-sm hidden-xs maincol">
+        <div class="users well">
+          <ul data-bind="foreach: users">
             <li data-bind="text: $data"></li>
-        </ul>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
+
+  <script id="loginBodyData" type="text/html">
+    <input type="text" class="form-control" data-bind="value: username">
+  </script>
+
+  <script id="loginHeaderTemplate" type="text/html">
+    <h3 data-bind="text: label"></h3>
+  </script>
+
+  <script id="loginFooterTemplate" type="text/html">
+    <button class="btn btn-primary" data-bind="click: action, html: primaryLabel"></button>
+  </script>
 
   <script src="/js/app.js" charset="utf-8"></script>
 </body>

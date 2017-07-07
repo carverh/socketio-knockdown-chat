@@ -1,3 +1,9 @@
+/*
+DorpChat Client
+(C) 2017 Carver Harrison
+http://dorpchat.aclevo.xyz
+*/
+
 window.setInterval(function() {
   var elem = document.querySelector('.messages');
   elem.scrollTop = elem.scrollHeight;
@@ -16,15 +22,21 @@ function MainViewModel() {
   var self = this;
   var socket = io();
 
-  this.messages = ko.observableArray();
+  self.messages = ko.observableArray();
 
-  this.usernameDialogOpen = ko.observable(true);
-  this.username = ko.observable();
-  this.channel = ko.observable('general');
-  this.users = ko.observableArray();
-  this.messageContent = ko.observable('');
+  self.usernameDialogOpen = ko.observable(true);
+  self.username = ko.observable();
+  self.channel = ko.observable('general');
+  self.users = ko.observableArray();
+  self.messageContent = ko.observable('');
 
-  this.messagewriterKeypress = function(data, event) {
+  self.loginBodyData = {
+      username: self.username
+  };
+
+  self.loginBodyTemplate = ko.observable('loginBodyData');
+
+  self.messagewriterKeypress = function(data, event) {
     var keyCode = (event.which ? event.which : event.keyCode);
     if (keyCode == 13) {
       this.sendMessage();
@@ -33,7 +45,7 @@ function MainViewModel() {
     return true;
   }
 
-  this.sendNotification = function(title, body) {
+  self.sendNotification = function(title, body) {
     // Let's check if the browser supports notifications
     if (!("Notification" in window)) {
       alert("This browser does not support desktop notification");
@@ -56,25 +68,29 @@ function MainViewModel() {
     }
   }
 
-  this.setUsername = function() {
-    socket.emit('set username', this.username())
+  self.setUsername = function() {
+    socket.emit('set username', self.username())
   }
 
-  this.sendMessage = function() {
-    if (this.messageContent().length > 0) {
-      socket.emit('send message', this.messageContent(), this.channel());
-      this.messageContent("");
+  self.sendMessage = function() {
+    if (self.messageContent().length > 0) {
+      if (self.messageContent()[0] == '/') {
+        socket.emit('run command', {command: self.messageContent().split('/')[1].split(' ')[0], args: self.messageContent().split(' ').splice(1)})
+      } else {
+        socket.emit('send message', {content: self.messageContent(), channel: self.channel()});
+      }
+      self.messageContent('');
     }
   }
 
-  socket.on('message', function(content, channel, sender) {
+  socket.on('message', function(data) {
     if (document.hidden) {
-      self.sendNotification(sender, content);
+      self.sendNotification(data.sender, data.content);
     }
     self.messages.push({
-      content: emojify.replace(micromarkdown.parse(content)),
-      channel: channel,
-      sender: sender
+      content: emojify.replace(micromarkdown.parse(data.content)),
+      channel: data.channel,
+      sender: data.sender
     });
   })
 

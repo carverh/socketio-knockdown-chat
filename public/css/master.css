@@ -1,0 +1,45 @@
+/*
+DorpChat CSS
+(C) 2017 Carver Harrison
+http://dorpchat.aclevo.xyz
+*/
+
+body, html, .container {
+     height: 100%;
+}
+
+body {
+  padding: 1rem;
+}
+
+.mainrow {
+  height: 50vh;
+}
+
+.maincol, .messages, .chat, .users {
+  height: 100%;
+}
+.title {
+  margin: 0 0 1rem 0;
+}
+
+.messages {
+  overflow-y: scroll;
+  padding: 8px;
+}
+
+.users {
+  overflow-y: scroll;
+}
+
+.users ul {
+
+}
+
+.emoji {
+  margin: 0;
+}
+
+.chat h1, .chat h2, .chat h3, .chat h4, .chat h5, .chat h6 {
+  margin: 0;
+}
