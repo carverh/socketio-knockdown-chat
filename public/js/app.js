@@ -4,10 +4,10 @@ DorpChat Client
 http://dorpchat.aclevo.xyz
 */
 
-window.setInterval(function() {
-  var elem = document.querySelector('.messages');
-  elem.scrollTop = elem.scrollHeight;
-}, 100);
+var typingStatus = {
+  last: 999,
+  typing: false
+}
 
 if (Notification.permission != "denied" && Notification.permission != "granted") {
   Notification.requestPermission(function(permission) {
@@ -36,12 +36,20 @@ function MainViewModel() {
 
   self.loginBodyTemplate = ko.observable('loginBodyData');
 
+  self.scrollToBottom = function() {
+    var elem = document.querySelector('.messages');
+    elem.scrollTop = elem.scrollHeight;
+  }
+
   self.messagewriterKeypress = function(data, event) {
     var keyCode = (event.which ? event.which : event.keyCode);
     if (keyCode == 13) {
-      this.sendMessage();
+      self.sendMessage();
       return false;
     }
+
+    typingStatus.last = Date.now();
+
     return true;
   }
 
@@ -92,6 +100,7 @@ function MainViewModel() {
       channel: data.channel,
       sender: data.sender
     });
+    self.scrollToBottom();
   })
 
   socket.on('login', function(data) {
