@@ -32,8 +32,8 @@ require('socketio-auth')(io, {
       log.debug(`User trying to sign up as ${data.username}`)
       User.find({
         username: username
-      }, function(err, users) {
-        if (users.length != 0) {
+      }, function(err, s) {
+        if (s.length != 0) {
           log.warning(`The user ${username} already exists`)
         } else {
           var newUser = User({
